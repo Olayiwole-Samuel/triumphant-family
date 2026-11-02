@@ -78,7 +78,9 @@ async function migrateRemote(url) {
   const { default: postgres } = await import("postgres");
   const { drizzle } = await import("drizzle-orm/postgres-js");
   const { migrate } = await import("drizzle-orm/postgres-js/migrator");
-  const client = postgres(url, { max: 1, prepare: false, onnotice: () => {} });
+  // Neon's copied strings include channel_binding=require, which postgres.js doesn't support (TLS still applies).
+  const cleanUrl = url.replace(/([?&])channel_binding=[^&]*(&|$)/, (_match, before, after) => (after ? before : "")).replace(/[?&]$/, "");
+  const client = postgres(cleanUrl, { max: 1, prepare: false, onnotice: () => {} });
   try {
     await migrate(drizzle(client), { migrationsFolder: MIGRATIONS });
     console.log("[db] Database is up to date");

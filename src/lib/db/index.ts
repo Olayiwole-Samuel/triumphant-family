@@ -22,6 +22,15 @@ export function isLocalDatabaseUrl(url = process.env.DATABASE_URL ?? "") {
   return /@(127\.0\.0\.1|localhost)[:/]/.test(url);
 }
 
+/**
+ * Neon's copied connection strings end with `channel_binding=require`, which
+ * the postgres.js driver doesn't support (the connection is still TLS-encrypted
+ * via sslmode=require). Removing it lets the string be pasted exactly as copied.
+ */
+export function withoutChannelBinding(url: string) {
+  return url.replace(/([?&])channel_binding=[^&]*(&|$)/, (_match, before: string, after: string) => (after ? before : "")).replace(/[?&]$/, "");
+}
+
 export function getDb(): Database {
   const url = process.env.DATABASE_URL;
   if (!url) {
@@ -32,7 +41,7 @@ export function getDb(): Database {
   if (globalForDb.__tfamDb?.url === url) return globalForDb.__tfamDb.db;
 
   const local = isLocalDatabaseUrl(url);
-  const client = postgres(url, {
+  const client = postgres(withoutChannelBinding(url), {
     // Works with poolers (Neon's pooled URL) and the local development server.
     prepare: false,
     // The local development database (PGlite) is reliable with one connection
