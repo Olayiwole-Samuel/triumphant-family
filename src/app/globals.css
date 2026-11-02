@@ -1,0 +1,248 @@
+@import "tailwindcss";
+
+/* =============================================================================
+   DESIGN TOKENS — "Deep Royal × iOS"
+
+   Every colour comes from the church logo. To keep combinations harmonious we
+   use TONAL VARIATIONS of the logo purple (the plum scale) rather than pairing
+   unrelated colours. Rules:
+   - Dark surfaces: plum-950 / plum-900. Light surfaces: plum-50 / white.
+   - Text on dark: white + plum-200/300. Text on light: plum-950 + plum-700.
+   - Gold is a tiny accent only (live dots, small highlights) — never a fill
+     next to pink, never on light surfaces, never at low opacity (it turns brown).
+   Tailwind's default palette is removed so only these colours exist.
+   ========================================================================== */
+
+@theme {
+  --color-*: initial;
+
+  /* Logo colours (exact) */
+  --color-brand-purple: #7b2d5e;
+  --color-brand-pink: #f2a6d0;
+  --color-brand-pinkSoft: #f4c2dd;
+  --color-brand-gold: #d9a227;
+  --color-brand-cream: #faf6f2;
+  --color-brand-white: #ffffff;
+  --color-brand-ink: #2b0f20;
+
+  /* Tonal scale built from the logo purple (600 = brand purple) */
+  --color-plum-50: #fbf7fa;
+  --color-plum-100: #f5ecf2;
+  --color-plum-200: #ead5e2;
+  --color-plum-300: #d7b1c8;
+  --color-plum-400: #b77d9f;
+  --color-plum-500: #97507b;
+  --color-plum-600: #7b2d5e;
+  --color-plum-700: #5f2149;
+  --color-plum-800: #441735;
+  --color-plum-900: #2d0e23;
+  --color-plum-950: #1a0614;
+
+  --color-white: #ffffff;
+
+  /* Admin only: error/destructive states (muted so it sits with the plum scale) */
+  --color-danger-50: #fdf1f1;
+  --color-danger-200: #f3c7c7;
+  --color-danger-600: #b3261e;
+  --color-danger-700: #8c1d18;
+
+  /* Type — Mona Sans (display widths + text) and Cormorant italic for scripture. */
+  --text-display-xl: clamp(3.4rem, 1.6rem + 7.4vw, 10rem);
+  --text-display-xl--line-height: 0.92;
+  --text-display-xl--letter-spacing: -0.055em;
+  --text-display-lg: clamp(2.6rem, 1.5rem + 4.6vw, 6.5rem);
+  --text-display-lg--line-height: 0.96;
+  --text-display-lg--letter-spacing: -0.05em;
+  --text-display-md: clamp(2.1rem, 1.4rem + 2.9vw, 4.5rem);
+  --text-display-md--line-height: 1.02;
+  --text-display-md--letter-spacing: -0.045em;
+  --text-display-sm: clamp(1.5rem, 1.2rem + 1.3vw, 2.5rem);
+  --text-display-sm--line-height: 1.1;
+  --text-display-sm--letter-spacing: -0.035em;
+  --text-lead: clamp(1.0625rem, 0.98rem + 0.45vw, 1.3125rem);
+  --text-lead--line-height: 1.55;
+  --text-lead--letter-spacing: -0.011em;
+
+  /* iOS-style continuous radii */
+  --radius-card: 1.75rem;
+  --radius-media: 2rem;
+  --radius-sheet: 2.75rem;
+
+  /* Soft, layered shadows tinted with plum (never grey/black) */
+  --shadow-card: 0 1px 2px rgb(26 6 20 / 0.04), 0 10px 30px -12px rgb(26 6 20 / 0.14);
+  --shadow-float: 0 2px 6px rgb(26 6 20 / 0.06), 0 30px 60px -20px rgb(26 6 20 / 0.35);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.36, 0.64, 1);
+}
+
+@theme inline {
+  --font-sans: var(--font-mona), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: var(--font-mona), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-serif: var(--font-cormorant), "Iowan Old Style", Georgia, serif;
+}
+
+/* =============================================================================
+   LAYOUT & MATERIAL UTILITIES
+   ========================================================================== */
+
+/* Page container: 16px gutters on phones, wider on large screens. */
+@utility container-site {
+  width: 100%;
+  max-width: 88rem;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4.5vw, 3rem);
+}
+
+/* Vertical rhythm between major sections. */
+@utility section-y {
+  padding-block: clamp(5rem, 3rem + 8vw, 9.5rem);
+}
+
+/* Expanded display width for large non-heading type (marquee, stats). */
+@utility display-wide {
+  font-family: var(--font-display);
+  font-stretch: 118%;
+}
+
+/* Scripture / emphasis voice. */
+@utility scripture {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* Small label above headings (iOS "section header" style, not shouty caps). */
+@utility eyebrow {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* Dark surfaces: readable text and a light focus ring. */
+@utility surface-dark {
+  --focus-ring: var(--color-plum-200);
+  color: var(--color-white);
+}
+
+/* iOS materials — translucent, blurred, slightly saturated. */
+@utility material-dark {
+  background-color: rgb(26 6 20 / 0.62);
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  border: 1px solid rgb(255 255 255 / 0.08);
+}
+
+@utility material-light {
+  background-color: rgb(255 255 255 / 0.72);
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  border: 1px solid rgb(26 6 20 / 0.06);
+}
+
+/* Apple-like continuous corners where the browser supports them. */
+@utility squircle {
+  @supports (corner-shape: squircle) {
+    corner-shape: squircle;
+  }
+}
+
+/* Fine film grain over large gradients (prevents colour banding). */
+@utility grain {
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* Light "sheet" that slides over the dark section before it. */
+@utility sheet {
+  position: relative;
+  z-index: 1;
+  margin-top: calc(var(--radius-sheet) * -1);
+  border-top-left-radius: var(--radius-sheet);
+  border-top-right-radius: var(--radius-sheet);
+}
+
+/* =============================================================================
+   BASE
+   ========================================================================== */
+
+@layer base {
+  html {
+    background-color: var(--color-plum-50);
+    color: var(--color-plum-950);
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-plum-50);
+    letter-spacing: -0.004em;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    /* Mona Sans width axis: slightly expanded headlines read as cinematic. */
+    font-stretch: 112%;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background-color: var(--color-plum-200);
+    color: var(--color-plum-950);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus-ring, var(--color-plum-600));
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+}
+
+/* =============================================================================
+   MOTION GATING
+   Elements marked [data-animate] (and children of [data-stagger]) start
+   invisible so they can animate in without a flash. This ONLY applies when:
+     1. the visitor has not asked for reduced motion, and
+     2. JavaScript is running (the .motion-ok class is added by an inline
+        script in the root layout, and removed again after 3s if the animation
+        system never starts — so content can never get stuck hidden).
+   Opacity is used rather than visibility so content stays available to
+   screen readers. Keep selectors in sync with src/lib/animations/utils.ts.
+   ========================================================================== */
+
+@keyframes tf-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.motion-ok [data-animate],
+.motion-ok [data-stagger] > * {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
